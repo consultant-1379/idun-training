@@ -1,0 +1,21 @@
+pipeline {
+    agent {
+	node("MT_II")
+    }
+    stages {
+        stage('Prepare') {
+            steps {
+                sh 'git clean -xdff'
+                sh 'git submodule sync'
+                sh 'git submodule update --init --recursive'
+                // Ensure that Bob has all of its dependencies.
+                sh './bob/bob -v'
+            }
+        }
+       stage('Version') {
+           steps {
+             sh './bob/bob version'
+           }
+       }
+    }
+}
